@@ -7,7 +7,7 @@ dotenv.config();
 const port = process.env.PORT;
 
 
-sequelize.authenticate().then(() => {
+sequelize.sync().then(() => {
   logger.info("Database connected!!")
 }).then(() => {
   app.listen(port, () => {

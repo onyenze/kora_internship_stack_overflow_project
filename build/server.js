@@ -18,7 +18,7 @@ const logger_1 = __importDefault(require("./utils/logger"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const port = process.env.PORT;
-config_1.default.authenticate().then(() => {
+config_1.default.sync().then(() => {
     logger_1.default.info("Database connected!!");
 }).then(() => {
     app_1.default.listen(port, () => {
