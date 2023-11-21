@@ -13,12 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
-const config_1 = __importDefault(require("./config/config"));
+const dbconfig_1 = __importDefault(require("./config/dbconfig"));
 const logger_1 = __importDefault(require("./utils/logger"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const models_1 = __importDefault(require("./models"));
 const port = process.env.PORT;
-config_1.default.sync().then(() => {
+console.log(dbconfig_1.default);
+models_1.default.sequelize.sync().then(() => {
     logger_1.default.info("Database connected!!");
 }).then(() => {
     app_1.default.listen(port, () => {
@@ -29,7 +31,7 @@ config_1.default.sync().then(() => {
     logger_1.default.error(error.message);
 });
 process.on("SIGINT", () => __awaiter(void 0, void 0, void 0, function* () {
-    yield config_1.default.close();
+    yield dbconfig_1.default.close();
     logger_1.default.info("Server closed");
     process.exit(0);
 }));

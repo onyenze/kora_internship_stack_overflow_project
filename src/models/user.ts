@@ -2,7 +2,8 @@
 import {
   Model,
   Optional,
-  DataTypes
+  DataTypes,
+  UUIDV4
 }  from'sequelize';
 
 interface UserAttributes{
@@ -56,14 +57,15 @@ module.exports = (sequelize: any, DataTypes: any) => {
     static associate(models: any) {
       // define association here
       User.belongsToMany(models.Task,{
-        through: "Tasks"
+        through: "TaskAssignments"
       })
     }
   }
   User.init(
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUIDV4,
+        defaultValue:UUIDV4,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,

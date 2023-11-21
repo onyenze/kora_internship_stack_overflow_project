@@ -1,19 +1,22 @@
 import app from "./app";
-import sequelize from "./config/config";
+import sequelize from "./config/dbconfig";
 import logger from "./utils/logger";
 import dotenv from "dotenv";
 dotenv.config();
 
+import db from "./models"
+
 const port = process.env.PORT;
 
+console.log(sequelize);
 
-sequelize.sync().then(() => {
+db.sequelize.sync().then(() => {
   logger.info("Database connected!!")
 }).then(() => {
   app.listen(port, () => {
     logger.info(`App listening on port: ${port}`);
   });
-}).catch((error) => {
+}).catch((error:any) => {
   console.log(`Failed to connect`)
   logger.error(error.message)
 })

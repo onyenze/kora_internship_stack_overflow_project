@@ -2,7 +2,8 @@ import { Sequelize } from "sequelize";
 import dotenv from "dotenv"
 dotenv.config()
 
-const sequelize = new Sequelize( {
+
+const sequelize = new Sequelize(process.env.SQLURL!, {
         database: process.env.MYSQLDATABASE!,
         username: process.env.MYSQLUSER!,
         password: process.env.MYSQLPASSWORD!,
@@ -14,5 +15,6 @@ const sequelize = new Sequelize( {
         }
       }
 )
+
 
 export default sequelize;

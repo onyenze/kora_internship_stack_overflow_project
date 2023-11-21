@@ -6,13 +6,14 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             // define association here
             User.belongsToMany(models.Task, {
-                through: "Tasks"
+                through: "TaskAssignments"
             });
         }
     }
     User.init({
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUIDV4,
+            defaultValue: sequelize_1.UUIDV4,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true,
