@@ -1,4 +1,5 @@
 'use strict';
+import sequelize from "../config/dbconfig";
 import {
   Model,
   Optional,
@@ -34,7 +35,7 @@ type optionalUserAttributes = Optional<
 
 >;
 
-module.exports = (sequelize: any, DataTypes: any) => {
+
   class User extends Model<UserAttributes, optionalUserAttributes> implements UserAttributes{
     /**
      * Helper method for defining associations.
@@ -61,11 +62,13 @@ module.exports = (sequelize: any, DataTypes: any) => {
       })
     }
   }
+
+
+
   User.init(
     {
       id: {
-        type: DataTypes.UUIDV4,
-        defaultValue:UUIDV4,
+        type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
@@ -122,5 +125,5 @@ module.exports = (sequelize: any, DataTypes: any) => {
       tableName: "Users",
     }
   );
-  return User;
-};
+
+export default User

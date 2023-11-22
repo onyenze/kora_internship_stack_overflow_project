@@ -23,7 +23,7 @@ console.log(dbconfig_1.default);
 models_1.default.sequelize.sync().then(() => {
     logger_1.default.info("Database connected!!");
 }).then(() => {
-    app_1.default.listen(port, () => {
+    app_1.default.listen(port || 4000, () => {
         logger_1.default.info(`App listening on port: ${port}`);
     });
 }).catch((error) => {

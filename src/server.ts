@@ -13,7 +13,7 @@ console.log(sequelize);
 db.sequelize.sync().then(() => {
   logger.info("Database connected!!")
 }).then(() => {
-  app.listen(port, () => {
+  app.listen(port || 4000, () => {
     logger.info(`App listening on port: ${port}`);
   });
 }).catch((error:any) => {

@@ -12,8 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     User.init({
         id: {
-            type: DataTypes.UUIDV4,
-            defaultValue: sequelize_1.UUIDV4,
+            type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true,
