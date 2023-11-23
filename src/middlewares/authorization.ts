@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { RequestHandler } from "express";
-import User from "../models/user.model";
+import User from "../models/user";
 dotenv.config();
 
 export const validUser: RequestHandler = async (req, res, next) => {

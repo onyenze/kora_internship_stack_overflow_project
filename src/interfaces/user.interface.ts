@@ -4,10 +4,10 @@ export interface UserAttributes{
   lastName:string
   email:string
   password:string
-  userId: string;
+  userId?: string;
   image?: string;
   token?: string;
-  verifyCode: string;
+  verifyCode?: string;
   isVerified?: boolean;
   updatedAt?: Date;
   createdAt?: Date;

@@ -13,7 +13,7 @@ interface UserAttributes{
   lastName:string
   email:string
   password:string
-  userId: string;
+  userId?: string;
   image?: string;
   token?: string;
   verifyCode: string;
