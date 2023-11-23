@@ -8,7 +8,6 @@ import { UserAttributes } from "../interfaces/user.interface";
 import { Content } from "mailgen";
 import mailGenerator from "../helpers/mail-generator";
 import mailSender from "../middlewares/mailservice";
-import { UploadedFile } from "express-fileupload";
 import cloudinary from "../middlewares/cloudinary";
 
 
@@ -59,7 +58,7 @@ export const signUpUser: RequestHandler = async (req, res) => {
     // generate token for each user that signs up!
     const generateToken = jwt.sign({
       userId: userData.userId,
-      userName: userData.userName
+      email: userData.email
     }, <string>process.env.JWT_SECRET_TOKEN, {
       expiresIn: "2d"
     });
@@ -72,7 +71,7 @@ export const signUpUser: RequestHandler = async (req, res) => {
 
     const emailContent: Content = {
       body: {
-        name: `${userProfile.userName}`,
+        name: `${userProfile.firstName}`,
         intro: ` Welcome to Social-commerce! Please verify your account using this code:`,
         action: {
           instructions: `Here's the code to verify your account below:`,
@@ -142,42 +141,6 @@ export const verifyUserSignUp: RequestHandler = async (req, res) => {
 };
 
 
-export const uploadProfileImage: RequestHandler = async (req, res) => {
-  try {
-    const token = req.params.token;
-    // check if an image was uploaded!
-    const file = req.files?.image as UploadedFile[];
-    if (!file) {
-      return res.status(400).json({
-        message: 'No file Uploaded!'
-      })
-    }
-    const decodedValues = jwt.decode(token);
-    console.log(decodedValues);
-
-
-    const uploads = Array.isArray(file) ? file : [file];
-    for (const file of uploads) {
-      const result = await cloudinary.uploader.upload(file.tempFilePath);
-
-
-      const uploadFileData = {
-        image: result.secure_url,
-        cloudId: result.public_id
-      }
-
-      await User.update(uploadFileData, { where: { token } });
-      return res.status(200).json({
-        message: "Upload Success!"
-      })
-    };
-  } catch (error: any) {
-    res.status(500).json({
-      message: error.message,
-      status: "Failed",
-    })
-  }
-}
 export const forgotPassword: RequestHandler = async (req, res)=>{
   try {
     const {email} = req.body
@@ -193,7 +156,7 @@ export const forgotPassword: RequestHandler = async (req, res)=>{
     // generate password token
     const passwordToken = jwt.sign({
       userId : checkEmail.userId,
-      userName : checkEmail.userName,
+      firstName : checkEmail.firstName,
       email : checkEmail.email
     }, <string>process.env.JWT_SECRET_TOKEN, {
       expiresIn: "1d"
