@@ -2,7 +2,7 @@
 import {
   Model
 }  from 'sequelize';
-
+import sequelize from "../config/dbconfig";
 interface TaskAttributes{
   id:number
   title:string

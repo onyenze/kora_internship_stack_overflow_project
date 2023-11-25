@@ -21,4 +21,5 @@ userRoute.route("/user/forgotPassword").post( forgotPassword);
 // reset password
 userRoute.route("/user/resetPassword/:token").put( resetPassword);
 
+
 export default userRoute; 

@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { ZodError, ZodType, z } from "zod";
-import { userInputType } from "../schemas/user.schema";
+import { UserAttributes } from "../interfaces/user.interface";
 
 const schemaObj = z.object({
   body: z.object({}),
@@ -8,7 +8,7 @@ const schemaObj = z.object({
   params: z.object({}),
 });
 
-export const validateUserSignUp = (schema: ZodType<userInputType>): RequestHandler => async (req, res, next) => {
+export const validateUserSignUp = (schema: ZodType<UserAttributes>): RequestHandler => async (req, res, next) => {
   try {
     schemaObj.parse({
       body: req.body,

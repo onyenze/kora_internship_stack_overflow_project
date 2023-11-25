@@ -12,20 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.uploadProfileImage = exports.verifyUserSignUp = exports.signUpUser = void 0;
-const user_model_1 = __importDefault(require("../models/user.model"));
+exports.resetPassword = exports.forgotPassword = exports.verifyUserSignUp = exports.signUpUser = void 0;
+const user_1 = __importDefault(require("../models/user"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const mail_generator_1 = __importDefault(require("../helpers/mail-generator"));
 const mailservice_1 = __importDefault(require("../middlewares/mailservice"));
-const cloudinary_1 = __importDefault(require("../middlewares/cloudinary"));
 const signUpUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('userProfile');
     try {
-        const { fullName, userName, password, email, phoneNumber } = req.body;
+        const { lastName, firstName, password, email } = req.body;
         //validate email for existence
-        const checkEmail = yield user_model_1.default.findOne({ where: { email } });
+        const checkEmail = yield user_1.default.findOne({ where: { email } });
         if (checkEmail) {
             return res.status(400).json({
                 message: "Email already taken!"
@@ -49,18 +48,17 @@ const signUpUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // create an instance record of a user 
         const userData = {
             userId: (0, uuid_1.v4)(),
-            userName,
-            fullName,
+            firstName,
+            lastName,
             email,
             password: hashPassword,
-            phoneNumber,
             verifyCode: verificationCode
         };
-        const userProfile = new user_model_1.default(userData);
+        const userProfile = new user_1.default(userData);
         // generate token for each user that signs up!
         const generateToken = jsonwebtoken_1.default.sign({
             userId: userData.userId,
-            userName: userData.userName
+            email: userData.email
         }, process.env.JWT_SECRET_TOKEN, {
             expiresIn: "2d"
         });
@@ -70,7 +68,7 @@ const signUpUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         //send the verification code to the user email address
         const emailContent = {
             body: {
-                name: `${userProfile.userName}`,
+                name: `${userProfile.firstName}`,
                 intro: ` Welcome to Social-commerce! Please verify your account using this code:`,
                 action: {
                     instructions: `Here's the code to verify your account below:`,
@@ -112,7 +110,7 @@ exports.signUpUser = signUpUser;
 const verifyUserSignUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { verificationCode } = req.body;
-        const theVerificationCode = yield user_model_1.default.findOne({ where: { $verifyCode$: verificationCode } });
+        const theVerificationCode = yield user_1.default.findOne({ where: { $verifyCode$: verificationCode } });
         if (!theVerificationCode) {
             return res.status(400).json({
                 message: "Invalid verification code!"
@@ -132,46 +130,11 @@ const verifyUserSignUp = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.verifyUserSignUp = verifyUserSignUp;
-const uploadProfileImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    try {
-        const token = req.params.token;
-        // check if an image was uploaded!
-        const file = (_a = req.files) === null || _a === void 0 ? void 0 : _a.image;
-        if (!file) {
-            return res.status(400).json({
-                message: 'No file Uploaded!'
-            });
-        }
-        const decodedValues = jsonwebtoken_1.default.decode(token);
-        console.log(decodedValues);
-        const uploads = Array.isArray(file) ? file : [file];
-        for (const file of uploads) {
-            const result = yield cloudinary_1.default.uploader.upload(file.tempFilePath);
-            const uploadFileData = {
-                image: result.secure_url,
-                cloudId: result.public_id
-            };
-            yield user_model_1.default.update(uploadFileData, { where: { token } });
-            return res.status(200).json({
-                message: "Upload Success!"
-            });
-        }
-        ;
-    }
-    catch (error) {
-        res.status(500).json({
-            message: error.message,
-            status: "Failed",
-        });
-    }
-});
-exports.uploadProfileImage = uploadProfileImage;
 const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = req.body;
         //validate email for existence
-        const checkEmail = yield user_model_1.default.findOne({ where: { email } });
+        const checkEmail = yield user_1.default.findOne({ where: { email } });
         if (!checkEmail) {
             return res.status(404).json({
                 message: "Email not found"
@@ -180,7 +143,7 @@ const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         // generate password token
         const passwordToken = jsonwebtoken_1.default.sign({
             userId: checkEmail.userId,
-            userName: checkEmail.userName,
+            firstName: checkEmail.firstName,
             email: checkEmail.email
         }, process.env.JWT_SECRET_TOKEN, {
             expiresIn: "1d"
@@ -241,7 +204,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const userID = validUserPayload.userId;
         const email = validUserPayload.email;
         //validate email for existence
-        const checkEmail = yield user_model_1.default.findOne({ where: { email } });
+        const checkEmail = yield user_1.default.findOne({ where: { email } });
         if (!checkEmail) {
             return res.status(404).json({
                 message: "Email not found"

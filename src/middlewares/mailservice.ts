@@ -9,7 +9,7 @@ import mailInterface from "../interfaces/mail.interface";
 
 export default class mailSender {
   private static instance: mailSender
-  private transporter: nodemailer.Transporter
+  private transporter!: nodemailer.Transporter;
 
   static getInstance() {
     if (!mailSender.instance) {
