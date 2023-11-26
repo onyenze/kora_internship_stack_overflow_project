@@ -1,24 +1,30 @@
-'use strict';
+// In index.ts
+import * as fs from 'fs';
+import * as path from 'path';
+import { Sequelize, DataTypes } from 'sequelize';
+import Task from './task';
+import dotenv from "dotenv";
+dotenv.config();
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-// const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(  '../config/database')[env];
+const config = require('../config/database')[env];
 
+const db: any = {};
 
-const db:any = {};
+let sequelize: Sequelize;
 
-let sequelize: any;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  const databaseUrl = process.env[config.use_env_variable];
+  if (!databaseUrl) {
+    throw new Error(`Environment variable ${config.use_env_variable} is not set.`);
+  }
+  sequelize = new Sequelize(databaseUrl, config);
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
-fs
-  .readdirSync(__dirname)
+
+fs.readdirSync(__dirname)
   .filter((file: string) => {
     return (
       file.indexOf('.') !== 0 &&
@@ -27,12 +33,15 @@ fs
       file.indexOf('.test.ts') === -1
     );
   })
-  .forEach((file: any) => { 
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    
+  .forEach((file: string) => {
+    const model = require(path.join(__dirname, file)).default;
+    if (model.associate) {
+      model.associate(db);
+    }
     db[model.name] = model;
-  });    
-Object.keys(db).forEach(modelName => {
+  });
+
+Object.keys(db).forEach((modelName: string) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
@@ -41,4 +50,4 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-export default  db;
+export default db;

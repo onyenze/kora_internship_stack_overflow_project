@@ -8,7 +8,6 @@ import db from "./models"
 
 const port = process.env.PORT;
 
-console.log(sequelize);
 
 db.sequelize.sync().then(() => {
   logger.info("Database connected!!")

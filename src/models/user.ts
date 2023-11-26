@@ -6,6 +6,7 @@ import {
   DataTypes,
   UUIDV4
 }  from'sequelize';
+import Task from "./task"
 
 interface UserAttributes{
   id:number
@@ -57,7 +58,7 @@ type optionalUserAttributes = Optional<
   declare readonly updatedAt: Date;
     static associate(models: any) {
       // define association here
-      User.belongsToMany(models.Task,{
+      User.belongsToMany(Task,{
         through: "TaskAssignments"
       })
     }

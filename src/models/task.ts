@@ -1,33 +1,29 @@
-'use strict';
-import {
-  Model
-}  from 'sequelize';
+// In task.ts
+import { Model, DataTypes } from 'sequelize';
 import sequelize from "../config/dbconfig";
-interface TaskAttributes{
-  id:number
-  title:string
-  status:["Completed","Unassigned","Incomplete"]
+import User from "./user"; 
+
+interface TaskAttributes {
+  id?: number;
+  title: string;
+  description: string;
 }
-module.exports = (sequelize:any, DataTypes:any) => {
-  class Task extends Model<TaskAttributes> implements TaskAttributes{
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    id!:number
-    title!: string;
-    status!: ['Completed', 'Unassigned', 'Incomplete'];
 
+class Task extends Model<TaskAttributes> implements TaskAttributes {
+  id!: number;
+  title!: string;
+  description!: string;
 
-    static associate(models:any) {
-      // define association here
-      Task.belongsToMany(models.User, {
-        through: "TaskAssignments"
-      })
-    }
+  static associate(models: any) {
+    // define association here
+    Task.belongsToMany(User, {
+      through: "TaskAssignments"
+    });
   }
-  Task.init({id: {
+}
+
+const TaskModel = Task.init({
+  id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey: true,
@@ -37,12 +33,15 @@ module.exports = (sequelize:any, DataTypes:any) => {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  status: {
+  description: {
     type: DataTypes.STRING,
     allowNull: false,
-  },}, {
-    sequelize,
-    modelName: 'Task',
-  });
-  return Task;
-};
+  },
+}, {
+  sequelize,
+  modelName: 'Task', // Set modelName to 'Task'
+});
+
+// Optionally, you can define hooks, scopes, etc. here.
+
+export default TaskModel;
