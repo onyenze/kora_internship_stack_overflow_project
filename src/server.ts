@@ -20,6 +20,7 @@ db.sequelize.sync({alter:true}).then(() => {
   console.log(`Failed to connect`)
   logger.error(error.message)
 })
+console.log("work");
 
 
 process.on("SIGINT", async () => {
