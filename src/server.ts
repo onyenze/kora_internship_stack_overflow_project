@@ -5,11 +5,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import db from "./models"
+import TaskModel from "./models/task";
 
 const port = process.env.PORT;
 
 
-db.sequelize.sync().then(() => {
+db.sequelize.sync({alter:true}).then(() => {
   logger.info("Database connected!!")
 }).then(() => {
   app.listen(port || 4000, () => {
