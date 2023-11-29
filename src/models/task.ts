@@ -2,6 +2,7 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from "../config/dbconfig";
 import User from "./user"; 
+import { setCache, getCache } from '../utils/cache';
 
 interface TaskAttributes {
   id?: number;
@@ -20,6 +21,33 @@ class Task extends Model<TaskAttributes> implements TaskAttributes {
       through: "TaskAssignments"
     });
   }
+
+
+  // Function to create a task and set it in the cache
+  static async createTaskWithCache(taskData: TaskAttributes) {
+    const createdTask = await this.create(taskData);
+    setCache(`task:${createdTask.id}`, createdTask.toJSON());
+    return createdTask;
+  }
+
+
+  // Function to get a task by ID with cache
+  static async getTaskByIdWithCache(taskId: number) {
+    const cachedTask = await getCache(`task:${taskId}`);
+    if (cachedTask) {
+      return cachedTask;
+    }
+
+    const task = await this.findByPk(taskId);
+    if (task) {
+      setCache(`task:${taskId}`, task.toJSON());
+    }
+
+    return task;
+  }
+
+
+
 }
 
 const TaskModel = Task.init({

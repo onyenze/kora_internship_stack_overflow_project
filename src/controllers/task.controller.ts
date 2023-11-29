@@ -6,6 +6,7 @@ import mailSender from "../middlewares/mailservice";
 import { TaskAttributes } from "../interfaces/task.interface";
 
 
+
 export const createTask : RequestHandler = async (req,res)=>{
     try {
         const {title,description} = req.body
@@ -14,8 +15,7 @@ export const createTask : RequestHandler = async (req,res)=>{
             status:"Incomplete",
             description
         }
-        const newTask = new Task(taskData)
-        await newTask.save()
+        const newTask =  await Task.createTaskWithCache(taskData)
         res.status(201).json({
             message:"Success",
             data:newTask
