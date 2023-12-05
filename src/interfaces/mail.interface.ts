@@ -9,4 +9,6 @@ interface mailInterface {
   html: string
 }
 
+
+
 export default mailInterface;
