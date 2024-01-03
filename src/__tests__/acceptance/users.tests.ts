@@ -5,6 +5,8 @@ import sequelize from "../../config/dbconfig";
 import db from "../../models"
 let connection:any, server:any;
 
+
+
 beforeEach(async()=>{
     connection  = await db.sequelize(); 
     await connection.sync()
