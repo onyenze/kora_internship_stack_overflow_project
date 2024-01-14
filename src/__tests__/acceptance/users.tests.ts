@@ -7,11 +7,13 @@ let connection:any, server:any;
 
 
 
-beforeEach(async()=>{
-    connection  = await db.sequelize(); 
-    await connection.sync()
-    server = app.listen(8000)
-})
+
+
+// beforeEach(async()=>{
+//     connection  = await db.sequelize(); 
+//     await connection.sync()
+//     server = app.listen(8000)
+// })
 
 
 
