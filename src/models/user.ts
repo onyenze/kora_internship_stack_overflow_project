@@ -23,6 +23,7 @@ interface UserAttributes{
   createdAt?: Date;
 }
 
+
 type optionalUserAttributes = Optional<
   UserAttributes,
   | "id"
